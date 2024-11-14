@@ -1,26 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project.Entities;
+using Project.Interface;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Project.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
     {
+        private readonly IdataContext _dataContext;
+        public OrderController(IdataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
         // GET: api/<OrderController>
         [HttpGet]
         public IEnumerable<Order> Get()
         {
-            return DataManager.dataContext.dataOrders;
+            return _dataContext.dataOrders;
         }
 
         // GET api/<OrderController>/5
         [HttpGet("{id}")]
         public Order Get(int id)
         {
-            return DataManager.dataContext.dataOrders.FirstOrDefault(x => x.Id == id); 
+            return _dataContext.dataOrders.FirstOrDefault(x => x.Id == id); 
         }
 
         // POST api/<OrderController>
@@ -29,7 +36,7 @@ namespace Project.Controllers
         {
             if (order!=null)
             {
-                DataManager.dataContext.dataOrders.Add(new Order(order));
+                _dataContext.dataOrders.Add(new Order(order));
                 return true;
 
             }
@@ -41,10 +48,10 @@ namespace Project.Controllers
         [HttpPut("{id}")]
         public bool Put(int id, [FromBody] Order value)
         {
-            int index = DataManager.dataContext.dataOrders.FindIndex(x => x.Id == id);
+            int index = _dataContext.dataOrders.FindIndex(x => x.Id == id);
             if (index != -1&&value!=null)
             {
-                DataManager.dataContext.dataOrders[index] = new Order(id, value);
+                _dataContext.dataOrders[index] = new Order(id, value);
                 return true;
             }
             return false;
@@ -54,7 +61,7 @@ namespace Project.Controllers
         [HttpDelete("{id}")]
         public bool Delete(int id)
         {
-            DataManager.dataContext.dataOrders.Remove(DataManager.dataContext.dataOrders.FirstOrDefault(x => x.Id == id));
+            _dataContext.dataOrders.Remove(_dataContext.dataOrders.FirstOrDefault(x => x.Id == id));
             return true;
         }
     }

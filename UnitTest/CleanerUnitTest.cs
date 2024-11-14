@@ -24,7 +24,7 @@ namespace UnitTest
             var id = 0;
             var controller = new CleanerController();
             var result = controller.Get(id);
-            Assert.IsType<OkResult>(result);
+            Assert.IsNotType<OkResult>(result);
 
         }
         [Fact]

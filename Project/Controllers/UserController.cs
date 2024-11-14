@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project.Entities;
+using Project.Interface;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,18 +10,23 @@ namespace Project.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IdataContext _dataContext;
+        public UserController(IdataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
         // GET: api/<UserController>
         [HttpGet]
         public IEnumerable<User> Get()
         {
-            return DataManager.dataContext.dataUsers;
+            return _dataContext.dataUsers;
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
         public User Get(int id)
         {
-            return DataManager.dataContext.dataUsers.FirstOrDefault(x => x.Id == id); ;
+            return _dataContext.dataUsers.FirstOrDefault(x => x.Id == id); ;
 
         }
 
@@ -28,7 +34,7 @@ namespace Project.Controllers
         [HttpPost]
         public bool Post([FromBody] User value)
         {
-            DataManager.dataContext.dataUsers.Add(new User(value));
+            _dataContext.dataUsers.Add(new User(value));
             return true;
         }
 
@@ -36,10 +42,10 @@ namespace Project.Controllers
         [HttpPut("{id}")]
         public bool Put(int id, [FromBody] User value)
         {
-            int index = DataManager.dataContext.dataUsers.FindIndex(x => x.Id == id);
+            int index = _dataContext.dataUsers.FindIndex(x => x.Id == id);
             if (index != -1)
             {
-                DataManager.dataContext.dataUsers[index] = new User(id, value);
+               _dataContext.dataUsers[index] = new User(id, value);
                 return true;
             }
             return false;
@@ -49,7 +55,7 @@ namespace Project.Controllers
         [HttpDelete("{id}")]
         public bool Delete(int id)
         {
-            DataManager.dataContext.dataUsers.Remove(DataManager.dataContext.dataUsers.FirstOrDefault(x => x.Id == id));
+            _dataContext.dataUsers.Remove(_dataContext.dataUsers.FirstOrDefault(x => x.Id == id));
             return true;
         }
     }

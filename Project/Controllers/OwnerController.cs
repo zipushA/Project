@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project.Entities;
+using Project.Interface;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,18 +10,23 @@ namespace Project.Controllers
     [ApiController]
     public class OwnerController : ControllerBase
     {
+        private readonly IdataContext _dataContext;
+        public OwnerController(IdataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
         // GET: api/<OwnerController>
         [HttpGet]
         public IEnumerable<Owner> Get()
         {
-            return DataManager.dataContext.dataOwners;
+            return _dataContext.dataOwners;
         }
 
         // GET api/<OwnerController>/5
         [HttpGet("{id}")]
         public Owner Get(int id)
         {
-            return DataManager.dataContext.dataOwners.FirstOrDefault(x => x.Id == id); ;
+            return _dataContext.dataOwners.FirstOrDefault(x => x.Id == id); ;
 
         }
 
@@ -28,7 +34,7 @@ namespace Project.Controllers
         [HttpPost]
         public bool Post([FromBody] Owner value)
         {
-            DataManager.dataContext.dataOwners.Add(new Owner(value));
+            _dataContext.dataOwners.Add(new Owner(value));
             return true;
 
         }
@@ -37,10 +43,10 @@ namespace Project.Controllers
         [HttpPut("{id}")]
         public bool Put(int id, [FromBody] Owner value)
         {
-            int index = DataManager.dataContext.dataOwners.FindIndex(x => x.Id == id);
+            int index = _dataContext.dataOwners.FindIndex(x => x.Id == id);
             if (index != -1)
             {
-                DataManager.dataContext.dataOwners[index] = new Owner(id, value);
+                _dataContext.dataOwners[index] = new Owner(id, value);
                 return true;
             }
             return false;
@@ -50,7 +56,7 @@ namespace Project.Controllers
         [HttpDelete("{id}")]
         public bool Delete(int id)
         {
-            DataManager.dataContext.dataOwners.Remove(DataManager.dataContext.dataOwners.FirstOrDefault(x => x.Id == id));
+            _dataContext.dataOwners.Remove(_dataContext.dataOwners.FirstOrDefault(x => x.Id == id));
             return true;
         }
     }

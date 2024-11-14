@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Project.Entities;
+using Project.Interface;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,18 +10,23 @@ namespace Project.Controllers
     [ApiController]
     public class ZimmerController : ControllerBase
     {
+        private readonly IdataContext _dataContext;
+        public ZimmerController(IdataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
         // GET: api/<ZimmerController>
         [HttpGet]
         public IEnumerable<Zimmer> Get()
         {
-            return DataManager.dataContext.dataZimmers;
+            return _dataContext.dataZimmers;
         }
 
         // GET api/<ZimmerController>/5
         [HttpGet("{id}")]
         public Zimmer Get(int id)
         {
-            return DataManager.dataContext.dataZimmers.FirstOrDefault(x => x.Id == id); ;
+            return _dataContext.dataZimmers.FirstOrDefault(x => x.Id == id); ;
 
         }
 
@@ -28,7 +34,7 @@ namespace Project.Controllers
         [HttpPost]
         public bool Post([FromBody] Zimmer value)
         {
-            DataManager.dataContext.dataZimmers.Add(new Zimmer(value));
+            _dataContext.dataZimmers.Add(new Zimmer(value));
             return true;
         }
 
@@ -36,10 +42,10 @@ namespace Project.Controllers
         [HttpPut("{id}")]
         public bool Put(int id, [FromBody] Zimmer value)
         {
-            int index = DataManager.dataContext.dataZimmers.FindIndex(x => x.Id == id);
+            int index = _dataContext.dataZimmers.FindIndex(x => x.Id == id);
             if (index != -1)
             {
-                DataManager.dataContext.dataZimmers[index] = new Zimmer(id, value);
+                _dataContext.dataZimmers[index] = new Zimmer(id, value);
                 return true;
 
             }
@@ -50,7 +56,7 @@ namespace Project.Controllers
         [HttpDelete("{id}")]
         public bool Delete(int id)
         {
-            DataManager.dataContext.dataZimmers.Remove(DataManager.dataContext.dataZimmers.FirstOrDefault(x => x.Id == id));
+            _dataContext.dataZimmers.Remove(_dataContext.dataZimmers.FirstOrDefault(x => x.Id == id));
             return true;
         }
     }
